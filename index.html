@@ -1,0 +1,82 @@
+<!doctype html>
+<html>
+<!--
+ * Copyright (c) 2011 Google Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+-->
+<head>
+<meta charset='utf-8' />
+<link rel='stylesheet' href='style.css' />
+<script src="https://apis.google.com/js/client.js"></script>
+<script>
+window.onload = function() {
+  auth(/* immediate */ true);
+}
+
+function auth(immediate) {
+  // Visit https://code.google.com/apis/console?api=plus to generate your
+  // oauth2 client id and simple api key.
+  var config = {
+    client_id: 'insert_your_oauth2_client_id',
+    scope: 'https://www.googleapis.com/auth/plus.me',
+    immediate: immediate
+  };
+  gapi.client.setApiKey('insert_your_simple_api_key');
+  gapi.auth.authorize(config, onAuthResponse);
+}
+
+function onAuthResponse(token) {
+  if (token) {
+    makeRequest();
+  } else {
+    authButton.style.visibility = '';
+  }
+}
+
+function makeRequest() {
+  gapi.client.load('plus', 'v1', function() {
+    var request = gapi.client.plus.activities.list({
+        'userId': 'me',
+        'maxResults': '20',
+        'collection': 'public'
+    });
+
+    request.execute(function(data) {
+      var div = document.getElementById('results');
+      for(var i=0; i<data.items.length; i++) {
+        var activity = data.items[i];
+        div.appendChild(document.createElement('P'));
+        div.appendChild(document.createTextNode(activity.object.content));
+      }
+    });
+
+    var personReq = gapi.client.plus.people.get({'userId': 'me'});
+    personReq.execute(function(data) {
+      var div = document.getElementById('me');
+      div.innerHTML = "<a href='" + data.url + "'>"
+            + data.displayName + "</a><div><img src='" + data.image.url + "'></div>";
+    });
+  });
+}
+</script>
+</head>
+<body>
+<header><h1>Google+ Starter App</h1></header>
+<div class='box'>
+  <a id="login" style="visibility: hidden" href="javascript:auth(false)">Connect Me!</a>
+  <div id='me'></div>
+  <div id='results'></div>
+</div>
+</body>
+</html>
