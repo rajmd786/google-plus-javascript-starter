@@ -37,10 +37,12 @@ function auth(immediate) {
 }
 
 function onAuthResponse(token) {
+  var login = document.getElementById('login');
   if (token) {
+    login.style.display = 'none';
     makeRequest();
   } else {
-    authButton.style.visibility = '';
+    login.style.display = '';
   }
 }
 
@@ -74,7 +76,7 @@ function makeRequest() {
 <body>
 <header><h1>Google+ Starter App</h1></header>
 <div class='box'>
-  <a id="login" style="visibility: hidden" href="javascript:auth(false)">Connect Me!</a>
+  <a id="login" style="display:none" href="javascript:auth(false)">Connect Me!</a>
   <div id='me'></div>
   <div id='results'></div>
 </div>
