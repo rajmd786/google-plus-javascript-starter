@@ -18,9 +18,8 @@
 <head>
 <meta charset='utf-8' />
 <link rel='stylesheet' href='style.css' />
-<script src="https://apis.google.com/js/client.js"></script>
 <script>
-window.onload = function() {
+function init() {
   auth(/* immediate */ true);
 }
 
@@ -33,7 +32,9 @@ function auth(immediate) {
     immediate: immediate
   };
   gapi.client.setApiKey('insert_your_simple_api_key');
-  gapi.auth.authorize(config, onAuthResponse);
+  window.setTimeout(function() {  
+    gapi.auth.authorize(config, onAuthResponse);
+  }, 1);
 }
 
 function onAuthResponse(token) {
@@ -72,6 +73,7 @@ function makeRequest() {
   });
 }
 </script>
+<script src="https://apis.google.com/js/client.js?onload=init"></script>
 </head>
 <body>
 <header><h1>Google+ Starter App</h1></header>
